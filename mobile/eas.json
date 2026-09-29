@@ -1,0 +1,20 @@
+{
+  "cli": {
+    "version": ">= 5.0.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "preview": {
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://abridge-crushed-eaten.ngrok-free.dev"
+      }
+    },
+    "production": {
+      "autoIncrement": true
+    }
+  }
+}

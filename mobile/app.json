@@ -1,0 +1,44 @@
+{
+  "expo": {
+    "name": "PhoneMail",
+    "slug": "phonemail",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "owner": "rishabh_86",
+    "splash": {
+      "backgroundColor": "#ffffff",
+      "resizeMode": "contain"
+    },
+    "android": {
+      "package": "com.phonemail.app",
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "POST_NOTIFICATIONS",
+        "READ_CONTACTS"
+      ]
+    },
+    "ios": {
+      "bundleIdentifier": "com.phonemail.app",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "PhoneMail uses your location once to suggest a language. It is never stored or shared.",
+        "NSContactsUsageDescription": "PhoneMail uses your contacts to suggest recipients. Contacts are never uploaded."
+      }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "4a210a5d-0bae-4e96-8a51-27b55ec45dba"
+      }
+    },
+    "plugins": [
+      "expo-localization",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "PhoneMail uses your location once to suggest a language. It is never stored or shared."
+        }
+      ]
+    ]
+  }
+}
