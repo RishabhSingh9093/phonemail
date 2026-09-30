@@ -45,3 +45,15 @@ CREATE TABLE messages (
 CREATE INDEX idx_messages_conversation ON messages(conversation_id);
 CREATE INDEX idx_messages_recipient ON messages(recipient_id);
 CREATE INDEX idx_users_phone ON users(phone);
+CREATE TABLE IF NOT EXISTS attachments (
+    id SERIAL PRIMARY KEY,
+    message_id INT REFERENCES messages(id) ON DELETE CASCADE,
+    uploader_id INT REFERENCES users(id) ON DELETE SET NULL,
+    filename TEXT NOT NULL,
+    mime_type TEXT,
+    size INT,
+    storage_name TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_attachments_message ON attachments(message_id);
+CREATE INDEX IF NOT EXISTS idx_attachments_uploader ON attachments(uploader_id);
