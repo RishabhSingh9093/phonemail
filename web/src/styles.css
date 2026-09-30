@@ -59,10 +59,10 @@ button { font-family: inherit; }
   display: flex; flex-direction: column; gap: 12px; position: relative;
 }
 .theme-toggle-auth {
-  position: absolute; top: 14px; right: 14px;
   background: var(--surface-hover); border: 1px solid var(--border);
   width: 36px; height: 36px; border-radius: 50%; font-size: 16px;
   cursor: pointer; color: var(--text);
+  display: flex; align-items: center; justify-content: center;
 }
 .auth-container h1 { margin: 0 0 8px; font-size: 28px; color: var(--text); text-align: center; }
 .auth-container input {
@@ -260,8 +260,9 @@ button.secondary:hover { background: var(--surface-hover); }
 
 /* ---------- Auth top actions ---------- */
 .auth-top-actions {
-  position: absolute; top: 14px; right: 14px;
   display: flex; gap: 8px; align-items: center;
+  justify-content: flex-end;
+  margin-bottom: 4px;
 }
 .lang-btn {
   background: var(--primary-soft); color: var(--primary);
