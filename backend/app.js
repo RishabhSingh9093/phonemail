@@ -21,6 +21,7 @@ const UPLOAD_DIR = process.env.UPLOAD_DIR || '/app/uploads';
 if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 
 const app = express();
+app.set('trust proxy', 1);
 app.use(helmet());
 app.use(cors());
 app.use(express.json({ limit: '2mb' }));
