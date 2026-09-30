@@ -14,6 +14,53 @@ Built for the **AlphaStack Buildathon**. Log in with SMS OTP, send mail via SMTP
 
 ---
 
+## Deployment
+
+The project runs in two independent modes:
+
+### 1. Local (Docker Compose)
+
+    git clone https://github.com/RishabhSingh9093/phonemail.git
+    cd phonemail
+    cp .env.example .env       # fill in real values (or use the one from the submission form)
+    docker compose up -d
+
+Fresh PostgreSQL database created on first run. Dev OTP fallback enabled by default.
+Web app → http://localhost:5173 · Mailpit → http://localhost:8025
+
+### 2. Hosted (Render + Supabase)
+
+The prebuilt Android APK points to a hosted backend that is always online:
+
+| Service | URL |
+|---|---|
+| Backend API | https://phonemail-backend.onrender.com |
+| Database | Supabase (PostgreSQL, Mumbai region) |
+| APK | [Download from Expo](https://expo.dev/accounts/rishabh_86/projects/phonemail/builds/b0c0ebbc-d6c9-4169-9049-52c0406228d0) |
+
+To deploy your own copy: fork the repo, connect it to Render (root dir `backend`,
+build `npm install`, start `node server.js`), and set `DATABASE_URL` to any
+PostgreSQL instance. Create tables by running `database/init/01-schema.sql`.
+
+The two modes have separate databases. Logging in with the same phone number
+creates a separate account on each.
+
+---
+
+## Features
+
+- **Auth:** Phone-number login with SMS OTP (Textbee) + on-screen dev fallback. JWT sessions.
+- **Mailbox:** Inbox / Drafts / Spam / Trash. Filters: All / Unread / Favorites / Attachments.
+- **Compose & reply:** Full SMTP path via Go microservice → Mailpit. Gmail SMTP for external recipients.
+- **Attachments:** Upload up to 10 MB. Inline image previews with full-screen modal. PDF viewer.
+- **Search:** Subject, body, and contact — encrypted-body aware.
+- **Trash:** Soft delete → restore → permanent delete.
+- **Dark mode** on web and mobile.
+- **i18n:** English / Hindi / Tamil with device-locale default and opt-in geolocation.
+- **Security:** AES-256-GCM encryption at rest, Helmet.js headers, rate limiting on `/auth/*`.
+
+---
+
 ## Tech stack
 
 | Layer | Tech |
