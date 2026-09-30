@@ -525,15 +525,42 @@ app.post('/messages/:id/reply', requireAuth, async (req, res) => {
   const { rows } = await pool.query('SELECT * FROM messages WHERE id = $1', [req.params.id]);
   if (!rows[0]) return res.status(404).json({ error: 'Message not found' });
   const original = rows[0];
+
   const reply = await pool.query(
     'INSERT INTO messages (conversation_id, sender_id, recipient_id, subject, body) VALUES ($1, $2, $3, $4, $5) RETURNING *',
     [original.conversation_id, req.user.id, original.sender_id, `Re: ${original.subject}`, encryptBody(body)]
   );
+
   const ids = Array.isArray(attachmentIds) ? attachmentIds.filter(Number.isFinite) : [];
   if (ids.length) {
-    await pool.query('UPDATE attachments SET message_id = $1 WHERE id = ANY($2::int[]) AND uploader_id = $3', [reply.rows[0].id, ids, req.user.id]);
+    await pool.query(
+      'UPDATE attachments SET message_id = $1 WHERE id = ANY($2::int[]) AND uploader_id = $3',
+      [reply.rows[0].id, ids, req.user.id]
+    );
   }
+
   await pool.query('UPDATE conversations SET updated_at = NOW() WHERE id = $1', [original.conversation_id]);
+
+  // Route the reply through the SMTP microservice so Mailpit sees it
+  try {
+    const recipientRes = await pool.query(
+      'SELECT phonemail_address FROM users WHERE id = $1',
+      [original.sender_id]
+    );
+    const recipientAddress = recipientRes.rows[0]?.phonemail_address;
+    if (recipientAddress) {
+      await fetch('http://mail-service:8080/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: recipientAddress,
+          subject: `Re: ${original.subject}`,
+          body,
+        }),
+      });
+    }
+  } catch (_) { /* non-fatal */ }
+
   res.json({ message: { ...reply.rows[0], body } });
 });
 
