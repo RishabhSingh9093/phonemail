@@ -10,7 +10,7 @@ Built for the **AlphaStack Buildathon**. Log in with SMS OTP, send mail via SMTP
 
 **Web app:** run locally with `docker compose up -d` then open http://localhost:5173
 
-**Android APK:** [⬇️ Download the latest APK](https://expo.dev/accounts/rishabh_86/projects/phonemail/builds/34d32fdc-b4ab-4ec0-bf7a-ef47a0dda898)
+**Android APK:** [⬇️ Download the latest APK](https://expo.dev/accounts/rishabh_86/projects/phonemail/builds/b0c0ebbc-d6c9-4169-9049-52c0406228d0)
 
 ---
 
@@ -126,7 +126,7 @@ First run builds the Node/Go/React images — takes ~2 minutes.
 
 **Option A — Download the prebuilt APK (recommended):**
 
-[⬇️ Download PhoneMail APK](https://expo.dev/accounts/rishabh_86/projects/phonemail/builds/34d32fdc-b4ab-4ec0-bf7a-ef47a0dda898)
+[⬇️ Download PhoneMail APK](https://expo.dev/accounts/rishabh_86/projects/phonemail/builds/b0c0ebbc-d6c9-4169-9049-52c0406228d0)
 
 Install it on an Android device. The APK is pre-configured to talk to a public
 backend URL, so no additional setup is required.
