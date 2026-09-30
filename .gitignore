@@ -18,3 +18,5 @@ pgdata/
 uploads/
 .claude/
 mobile/backend/
+auth-keys.txt
+.env.save
