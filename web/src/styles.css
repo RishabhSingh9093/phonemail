@@ -363,3 +363,116 @@ button.secondary:hover { background: var(--surface-hover); }
 }
 .attach-download:hover { border-color: var(--primary); background: var(--primary-soft); }
 .attach-dl { color: var(--primary); font-weight: 700; margin-left: 4px; }
+
+/* ---------- Attachment preview modal ---------- */
+.attach-icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 2px 6px;
+  color: var(--primary);
+  border-radius: 6px;
+}
+.attach-icon-btn:hover {
+  background: var(--primary-soft);
+}
+.preview-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 24px;
+}
+.preview-modal {
+  background: var(--surface);
+  border-radius: 14px;
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+}
+.preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+}
+.preview-title {
+  font-weight: 600;
+  color: var(--text);
+  max-width: 70%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.preview-actions { display: flex; gap: 8px; }
+.preview-actions button {
+  background: var(--surface-hover);
+  border: 1px solid var(--border);
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--text);
+  font-size: 14px;
+}
+.preview-actions button:hover {
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+.preview-body {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  overflow: auto;
+  background: var(--surface-2);
+}
+.preview-body img {
+  max-width: 100%;
+  max-height: 75vh;
+  border-radius: 8px;
+  object-fit: contain;
+}
+.preview-fallback {
+  text-align: center;
+  padding: 40px 20px;
+}
+.preview-fallback-icon { font-size: 64px; }
+.preview-fallback-name { font-weight: 600; color: var(--text); margin-top: 12px; }
+.preview-fallback-size { color: var(--text-muted); font-size: 13px; margin-top: 4px; }
+.preview-open-btn {
+  margin-top: 16px;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ---------- Inline PDF preview ---------- */
+.preview-pdf {
+  width: 100%;
+  height: 75vh;
+  border: none;
+  border-radius: 8px;
+  background: #fff;
+}
+.preview-loading,
+.preview-error {
+  color: var(--text-muted);
+  font-size: 14px;
+  padding: 40px;
+  text-align: center;
+}
+.preview-error { color: var(--danger); }

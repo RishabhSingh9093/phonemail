@@ -21,6 +21,8 @@ const FILTERS = [
   { key: 'attachments' },
 ];
 
+const isImageMime = (mime) => (mime || '').startsWith('image/');
+
 const formatSize = (bytes) => {
   if (!bytes || bytes < 0) return '0 B';
   const k = 1024;
@@ -89,6 +91,7 @@ function App() {
   const [profileName, setProfileName] = useState('');
 
   const [toasts, setToasts] = useState([]);
+  const [previewAtt, setPreviewAtt] = useState(null);
   const fileInputRef = useRef(null);
 
   const t = useCallback((key, vars) => translate(lang, key, vars), [lang]);
@@ -604,11 +607,30 @@ function App() {
                     {m.attachments && m.attachments.length > 0 && (
                       <div className="attach-list">
                         {m.attachments.map((a) => (
-                          <button key={a.id} className="attach-chip attach-download" onClick={() => downloadAttachment(a)}>
-                            <span className="attach-name">📎 {a.filename}</span>
+                          <div key={a.id} className="attach-chip attach-download">
+                            <span
+                              className="attach-name"
+                              onClick={() => setPreviewAtt(a)}
+                              style={{ cursor: 'pointer' }}
+                            >
+                              📎 {a.filename}
+                            </span>
                             <span className="attach-size">{formatSize(a.size)}</span>
-                            <span className="attach-dl">↓</span>
-                          </button>
+                            <button
+                              className="attach-icon-btn"
+                              title="Preview"
+                              onClick={() => setPreviewAtt(a)}
+                            >
+                              👁
+                            </button>
+                            <button
+                              className="attach-icon-btn"
+                              title="Download"
+                              onClick={() => downloadAttachment(a)}
+                            >
+                              ↓
+                            </button>
+                          </div>
                         ))}
                       </div>
                     )}
@@ -697,7 +719,109 @@ function App() {
         onSelect={(code) => { setLang(code); setShowLangPicker(false); }}
         onDetect={detectFromLocation} detecting={detecting} t={t}
       />
+      <PreviewModal
+        visible={!!previewAtt}
+        attachment={previewAtt}
+        token={token}
+        onClose={() => setPreviewAtt(null)}
+        onDownload={(att) => { downloadAttachment(att); }}
+      />
     </>
+  );
+}
+
+function PreviewModal({ visible, attachment, token, onClose, onDownload }) {
+  const [blobUrl, setBlobUrl] = React.useState(null);
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState('');
+
+  React.useEffect(() => {
+    if (!visible || !attachment) {
+      setBlobUrl(null); setError(''); return;
+    }
+
+    // For images, load directly via blob (auth header needed)
+    const mime = attachment.mime_type || '';
+    const needsBlob = true; // always fetch with auth to keep it simple
+
+    setLoading(true); setError('');
+    let cancelled = false;
+
+    fetch(`${API_URL}${attachment.url}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((r) => {
+        if (!r.ok) throw new Error('Failed to load');
+        return r.blob();
+      })
+      .then((blob) => {
+        if (cancelled) return;
+        const url = URL.createObjectURL(blob);
+        setBlobUrl(url);
+      })
+      .catch((e) => { if (!cancelled) setError(e.message || 'Failed'); })
+      .finally(() => { if (!cancelled) setLoading(false); });
+
+    return () => {
+      cancelled = true;
+      if (blobUrl) URL.revokeObjectURL(blobUrl);
+    };
+  }, [visible, attachment, token]);
+
+  if (!visible || !attachment) return null;
+
+  const mime = attachment.mime_type || '';
+  const isImg = mime.startsWith('image/');
+  const isPdf = mime === 'application/pdf';
+  const isText = mime.startsWith('text/');
+
+  return (
+    <div className="preview-backdrop" onClick={onClose}>
+      <div className="preview-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="preview-header">
+          <span className="preview-title">{attachment.filename}</span>
+          <div className="preview-actions">
+            <button onClick={() => onDownload(attachment)} title="Download">↓</button>
+            <button onClick={onClose} title="Close">✕</button>
+          </div>
+        </div>
+        <div className="preview-body">
+          {loading && <div className="preview-loading">Loading…</div>}
+          {error && <div className="preview-error">Could not load preview</div>}
+          {!loading && !error && blobUrl && (
+            <>
+              {isImg && (
+                <img src={blobUrl} alt={attachment.filename} />
+              )}
+              {isPdf && (
+                <iframe
+                  src={blobUrl}
+                  title={attachment.filename}
+                  className="preview-pdf"
+                />
+              )}
+              {isText && (
+                <iframe
+                  src={blobUrl}
+                  title={attachment.filename}
+                  className="preview-pdf"
+                />
+              )}
+              {!isImg && !isPdf && !isText && (
+                <div className="preview-fallback">
+                  <div className="preview-fallback-icon">📄</div>
+                  <div className="preview-fallback-name">{attachment.filename}</div>
+                  <div className="preview-fallback-size">{formatSize(attachment.size)}</div>
+                  <button className="preview-open-btn" onClick={() => onDownload(attachment)}>
+                    Download
+                  </button>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }
 
