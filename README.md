@@ -6,6 +6,12 @@ Built for the **AlphaStack Buildathon**. Log in with SMS OTP, send mail via SMTP
 
 ---
 
+## 🎥 Demo video
+
+[Watch the 5-minute walkthrough on YouTube](https://youtu.be/tkeQ-UxRtds)
+
+---
+
 ## 📱 Try the app
 
 **Web app:** run locally with `docker compose up -d` then open http://localhost:5173
